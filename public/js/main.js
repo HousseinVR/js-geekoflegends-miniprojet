@@ -58,7 +58,76 @@ function posture() {
     }
 }
 
-// //Fonction combat
-// function combat() {
+//Fonction combat
+function combat() {
 
-//     // alert("Le combat va commencer!")
+    alert("Le combat va commencer!")
+
+    //pv a partir duquelle le boss lance l'enigme
+    let vingt = boss.pv / 5;
+
+    while (boss.pv > vingt && (guerrier.pv > 0 || archer.pv > 0 || mage.pv > 0)) {
+
+        guerrier.rage();
+        mage.pointsMana();
+
+        // Attaques des héros
+        if (guerrier.pv > 0) {
+            alert(`${guerrier.nom} attaque ${boss.nom}`);
+            boss.pv -= guerrier.pa;
+            alert(`${boss.nom} perd ${guerrier.pa} points de vie. Il lui reste ${boss.pv}pv`);
+        }
+
+        if (archer.pv > 0 && boss.pv > 0 && archer.fleches >= 2) {
+            alert(`${archer.nom} attaque ${boss.nom}`)
+            boss.pv -= archer.pa;
+            alert(`${boss.nom} perd ${archer.pa} points de vie. Il lui reste ${boss.pv}pv`);
+            archer.nbreFleche();
+        } else if (archer.pv > 0 && archer.fleches < 2) {
+            alert(`${archer.nom} n'a plus de flèches. Il passe un tour.`)
+        }
+
+        if (mage.pv > 0 && boss.pv > 0 && mage.mana >= 2) {
+            alert(`${mage.nom} attaque ${boss.nom}`)
+            boss.pv -= mage.pa;
+            alert(`${boss.nom} perd ${mage.pa} points de vie. Il lui reste ${boss.pv}pv`);
+        } else if (mage.pv > 0 && mage.mana < 2) {
+            alert(`${mage.nom} n'a plus de mana. Il passe un tour.`)
+        }
+
+        //Choix de la victime du boss
+        let defenseur = lesHeros[Math.floor(Math.random() * lesHeros.length)];
+        while (defenseur.pv <= 0) {
+            defenseur = lesHeros[Math.floor(Math.random() * lesHeros.length)];
+        }
+
+        //Attaque du boss
+        if (boss.pv > vingt) {
+            alert(`${boss.nom} attaque ${defenseur.nom}`);
+            defenseur.pv -= boss.pa;
+            if (defenseur.pv >= 0) {
+                alert(`${defenseur.nom} perd ${boss.pa} points de vie. Il lui reste ${defenseur.pv}pv`);
+            } else {
+                alert(`Attaque critique! ${defenseur.nom} n'a plus de pv.`);
+            }
+        }
+
+        if (defenseur.pv <= 0) {
+            alert(`${defenseur.nom} est mort`);
+        }
+    }
+    if (boss.pv < vingt) {
+        alert(`${boss.nom} est bientôt mort. En dernière resource, il lance énigme. Si tu trouves la réponse tu gagnes, sinon, tu perds.`);
+        boss.enigme(guerrier, mage, archer);
+    }
+
+    if (boss.pv <= 0) {
+        alert(`Tu as battu ${boss.nom}. Félicitations!`);
+    } else if (guerrier.pv <= 0 && archer.pv <= 0 && mage.pv <= 0) {
+        alert(`Tu as perdu. Tu auras plus de chance la prochaine fois.`);
+    }
+}
+
+choixBoss()
+posture()
+combat()
